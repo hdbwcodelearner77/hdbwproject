@@ -5,18 +5,25 @@ import random
 pygame.init()
 
 #basic game setup
+#pixelformat festlegen
 window_width = 450
 window_height = 800
+#pixelformat pygame übermitteln
 window = pygame.display.set_mode((window_width,window_height))
+#icon für taksleiste laden und übermitteln
 pygame_icon = pygame.image.load('textures/hdbw.png')
 pygame.display.set_icon(pygame_icon)
+#window caption festlegen
 pygame.display.set_caption("HDBW Bird")
+#frames per second angeben für später
 refresh_rate = 120
+#clock element erstellen um frames per second später einzustellen
 FPS = pygame.time.Clock()
 
 
-#import sounds
+#pygame mixer initialisieren
 pygame.mixer.init()
+#import sounds
 coin_sound = pygame.mixer.Sound('sounds/point.ogg')
 hit_sound = pygame.mixer.Sound('sounds/hit.ogg')
 wing_sound = pygame.mixer.Sound('sounds/wing.ogg')
@@ -33,10 +40,9 @@ startscreen = pygame.transform.scale2x(pygame.image.load('textures/message2.png'
 
 #load backround
 backround = pygame.image.load('textures/bg.png').convert()
-#load and transform ground
+#load and transform ground to right position
 ground = pygame.image.load('textures/base.png').convert()
 ground = pygame.transform.scale(ground,(window_width, ground.get_height()))
-
 
 
 #load player images
