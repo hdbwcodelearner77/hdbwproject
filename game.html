@@ -13,6 +13,7 @@
     </style>
 
     <script>
+        ///Habe kommentare teilweise auf englisch oder deutsch verfasst nicht wundern ;)///
         let KEY_SPACE = false; //32
         let KEY_UP = false; // 38
         let KEY_DOWN = false; // 40 
@@ -25,8 +26,6 @@
         let hit_sound = new Audio('sounds/hit.mp3')
         
 
-    
-
         let rocket = {
             x: 100,
             y: 350,
@@ -34,11 +33,11 @@
             height: 150,
             src: 'img/rocket.png'
         };
-
+        //ufo and shot arrays
         let ufos = [];
         let shots = [];
 
-
+        //onkeydown function zur festlegung von keybinds und überprüfung der tasten
         document.onkeydown = function(e) {
             if (e.keyCode == 32) { //spacetaste gedrückt
                 KEY_SPACE = true;
@@ -74,11 +73,12 @@
                 KEY_DOWN = false;
             }
         }
-
+        //startgame function führt alle funktionen am start aus damit das spiel läuft
         function startGame() {
             canvas = document.getElementById('canvas');
             ctx = canvas.getContext('2d');
             loadimg();
+            //intervalle für functions festgestellt um beliebige ausführung zu gewährleisten
             setInterval(update, 1000 / 120);
             setInterval(spawnufos, 500);
             setInterval(collision, 1000 / 120);
@@ -86,7 +86,7 @@
             draw(); 
 
         }
- 
+        //rocket ufos and shot collision check
         function collision(){
             ufos.forEach(function(ufo){
                 if (rocket.x + rocket.width > ufo.x &&
@@ -96,6 +96,7 @@
                 ) {
                     rocket.img.src = 'img/boom.png';
                     console.log('Collison!');
+                    //sobald die rakete getroffen wird gehts zurück zum startscreen
                     window.location.href = "/Users/maxmohr/Desktop/Uni/rocketspace/startscreen.html";
                     explosion_sound.play();   
                 }
@@ -107,12 +108,12 @@
                         shot.x < ufo.x &&
                         shot.y < ufo.y + ufo.height
                     )
-                    {
+                    {   
                         ufo.hit = true;
+                        //wenn das ufo getroffen wird dann wird das bild mit einem explosions bild ersetzt
                         ufo.img.src = 'img/boom.png';
-                        console.log('Collision');
                         hit_sound.play();
-
+                        // alle getroffenen ufos werden aus dem array rausgefiltert nach 2sekunden damit sie verschwinden
                         setTimeout(() => {
                             ufos = ufos.filter(u => u != ufo);
                         }, 2000);
@@ -132,13 +133,14 @@
                     img: new Image()
                 };
                 shot.img.src = shot.src;
+                //.push um das shots array jedesmal beim schießen erweitern lassen
                 shots.push(shot);
                 laser_sound.play();
             }
         }
 
 
-
+        //update function for change shot speed, rocket agility and ufo speed
         function update(){
             if (KEY_UP) {
                 rocket.y -= 10;
@@ -159,7 +161,7 @@
                 shot.x += 20;
             });
         }
-
+        //function to spawn ufos randomly 
         function spawnufos(){
             let ufo = {
                 x: 2100, 
@@ -172,13 +174,13 @@
             ufo.img.src = ufo.src; //ufo bild wird geladen
             ufos.push(ufo);
         }
-
+        //load background and rocket image at first
         function loadimg(){
             backgroundImage.src = 'img/background.png';
             rocket.img = new Image();
             rocket.img.src = rocket.src;
         }
-               
+        //draw function zum zeichnen von allen spiel elementen mit der ctx "context" variable
         function draw(){
             ctx.drawImage(backgroundImage, 0, 0);
             ctx.drawImage(rocket.img, rocket.x, rocket.y, rocket.width, rocket.height);
