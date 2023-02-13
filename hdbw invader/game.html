@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HDBWInvaders</title>
+
+    <style>
+        canvas{
+             background-color: rgb(0, 0, 0);
+        }
+    </style>
+
+    <script>
+        let KEY_SPACE = false; //32
+        let KEY_UP = false; // 38
+        let KEY_DOWN = false; // 40 
+        let canvas;
+        let ctx;
+        let backgroundImage = new Image();
+        let laser_sound = new Audio('sounds/laser.mp3')
+        let explosion_sound = new Audio('sounds/explosion.mp3')
+        explosion_sound.volume = 0.2;
+        let hit_sound = new Audio('sounds/hit.mp3')
+        
+
+    
+
+        let rocket = {
+            x: 100,
+            y: 350,
+            width: 300,
+            height: 150,
+            src: 'img/rocket.png'
+        };
+
+        let ufos = [];
+        let shots = [];
+
+
+        document.onkeydown = function(e) {
+            if (e.keyCode == 32) { //spacetaste gedrückt
+                KEY_SPACE = true;
+            }
+        
+
+        
+            if (e.keyCode == 38) { //uptaste gedrückt
+                KEY_UP = true;
+            }
+        
+
+            if (e.keyCode == 40) { //downtaste gedrückt
+                KEY_DOWN = true;
+            }
+        }
+
+
+        document.onkeyup = function(e) {
+            if (e.keyCode == 32) { //spacetaste losgelassen
+                KEY_SPACE = false;
+            }
+        
+
+        
+            if (e.keyCode == 38) { //uptaste loslassen
+                KEY_UP = false;
+            }
+        
+
+        
+            if (e.keyCode == 40) { //downtaste losgelassen
+                KEY_DOWN = false;
+            }
+        }
+
+        function startGame() {
+            canvas = document.getElementById('canvas');
+            ctx = canvas.getContext('2d');
+            loadimg();
+            setInterval(update, 1000 / 120);
+            setInterval(spawnufos, 500);
+            setInterval(collision, 1000 / 120);
+            setInterval(shoot, 1000/ 10);
+            draw(); 
+
+        }
+ 
+        function collision(){
+            ufos.forEach(function(ufo){
+                if (rocket.x + rocket.width > ufo.x &&
+                    rocket.y + rocket.height > ufo.y &&
+                    rocket.x < ufo.x &&
+                    rocket.y < ufo.y + ufo.height
+                ) {
+                    rocket.img.src = 'img/boom.png';
+                    console.log('Collison!');
+                    window.location.href = "/Users/maxmohr/Desktop/Uni/rocketspace/startscreen.html";
+                    explosion_sound.play();   
+                }
+
+
+                shots.forEach(function(shot){
+                    if (shot.x +shot.width > ufo.x &&
+                        shot.y + shot.height > ufo.y &&
+                        shot.x < ufo.x &&
+                        shot.y < ufo.y + ufo.height
+                    )
+                    {
+                        ufo.hit = true;
+                        ufo.img.src = 'img/boom.png';
+                        console.log('Collision');
+                        hit_sound.play();
+
+                        setTimeout(() => {
+                            ufos = ufos.filter(u => u != ufo);
+                        }, 2000);
+                    }
+                    });
+            });
+        }
+
+        function shoot(){
+            if (KEY_SPACE){
+                let shot = {
+                    x: rocket.x + 250,
+                    y: rocket.y + 70,
+                    width: 50,
+                    height: 10,
+                    src: 'img/shot.png',
+                    img: new Image()
+                };
+                shot.img.src = shot.src;
+                shots.push(shot);
+                laser_sound.play();
+            }
+        }
+
+
+
+        function update(){
+            if (KEY_UP) {
+                rocket.y -= 10;
+            }
+
+            if (KEY_DOWN) {
+                rocket.y += 10;
+            }
+
+            ufos.forEach(function(ufo){
+                if (!ufo.hit) {
+                    ufo.x -= 5;
+                }
+                
+            });
+
+            shots.forEach(function(shot){
+                shot.x += 20;
+            });
+        }
+
+        function spawnufos(){
+            let ufo = {
+                x: 2100, 
+                y: Math.random() * 1000, // ufo spawn randomizen
+                width: 200,
+                height: 200,
+                src: 'img/ufo.png',
+                img: new Image()
+            };
+            ufo.img.src = ufo.src; //ufo bild wird geladen
+            ufos.push(ufo);
+        }
+
+        function loadimg(){
+            backgroundImage.src = 'img/background.png';
+            rocket.img = new Image();
+            rocket.img.src = rocket.src;
+        }
+               
+        function draw(){
+            ctx.drawImage(backgroundImage, 0, 0);
+            ctx.drawImage(rocket.img, rocket.x, rocket.y, rocket.width, rocket.height);
+
+            ufos.forEach(function(ufo){
+                ctx.drawImage(ufo.img, ufo.x, ufo.y, ufo.width, ufo.height);
+            });
+
+            shots.forEach(function(shot){
+                ctx.drawImage(shot.img, shot.x, shot.y, shot.width, shot.height);
+            });
+
+
+            requestAnimationFrame(draw);
+        }
+    </script>
+</head>
+<body onload="startGame()">
+   <canvas id="canvas" width="1650" height="925"></canvas> 
+   
+</body>
+</html> 
