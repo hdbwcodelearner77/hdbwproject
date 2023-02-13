@@ -13,9 +13,9 @@
     </style>
 
     <script>
-        let KEY_SPACE = false; //32
-        let KEY_UP = false; // 38
-        let KEY_DOWN = false; // 40 
+        let KEY_SPACE = false; //32 keycode
+        let KEY_UP = false; // 38 keycode
+        let KEY_DOWN = false; // 40 keycode
         let canvas;
         let ctx;
         let backgroundImage = new Image();
@@ -34,11 +34,11 @@
             height: 150,
             src: 'img/rocket.png'
         };
-
+        //ufo und shot arrays
         let ufos = [];
         let shots = [];
 
-
+        //onkeydown function für spieler eingabe kontrolle
         document.onkeydown = function(e) {
             if (e.keyCode == 32) { //spacetaste gedrückt
                 KEY_SPACE = true;
@@ -74,7 +74,7 @@
                 KEY_DOWN = false;
             }
         }
-
+        //Main Function um spiel zu starten mit allen "komponenten"
         function startGame() {
             canvas = document.getElementById('canvas');
             ctx = canvas.getContext('2d');
@@ -86,7 +86,7 @@
             draw(); 
 
         }
- 
+        //collisions kontrolle
         function collision(){
             ufos.forEach(function(ufo){
                 if (rocket.x + rocket.width > ufo.x &&
@@ -94,7 +94,7 @@
                     rocket.x < ufo.x &&
                     rocket.y < ufo.y + ufo.height
                 ) {
-                    rocket.img.src = 'img/boom.png';
+                    rocket.img.src = 'img/boom.png'; 
                     console.log('Collison!');
                     window.location.href = "/Users/maxmohr/Desktop/Uni/rocketspace/startscreen.html";
                     explosion_sound.play();   
@@ -109,10 +109,10 @@
                     )
                     {
                         ufo.hit = true;
-                        ufo.img.src = 'img/boom.png';
-                        console.log('Collision');
+                        ufo.img.src = 'img/boom.png'; //ufo image wird nach treffer zur explosion geändert
+                        console.log('Collision'); 
                         hit_sound.play();
-
+                        //die ufo array filterfunktion wird benutzt um getroffene ufos nach 2 sekunden verschwinden zu lassen
                         setTimeout(() => {
                             ufos = ufos.filter(u => u != ufo);
                         }, 2000);
@@ -120,7 +120,7 @@
                     });
             });
         }
-
+        
         function shoot(){
             if (KEY_SPACE){
                 let shot = {
@@ -132,13 +132,13 @@
                     img: new Image()
                 };
                 shot.img.src = shot.src;
-                shots.push(shot);
+                shots.push(shot); //.push function damit jeder neue shot dem array hinzugefügt wird
                 laser_sound.play();
             }
         }
 
-
-
+        
+        //upadte function um spiel objekte bewegt anzuzeigen
         function update(){
             if (KEY_UP) {
                 rocket.y -= 10;
@@ -169,10 +169,10 @@
                 src: 'img/ufo.png',
                 img: new Image()
             };
-            ufo.img.src = ufo.src; //ufo bild wird geladen
+            ufo.img.src = ufo.src; //ufo bild wird erst geladen sobald ufo spawnt 
             ufos.push(ufo);
         }
-
+        //hintergrund und rocket werden zuerst geladen
         function loadimg(){
             backgroundImage.src = 'img/background.png';
             rocket.img = new Image();
